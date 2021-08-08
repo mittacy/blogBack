@@ -13,6 +13,16 @@ import (
 	"strconv"
 )
 
+/**
+ * @apiDefine CategoryNameExist 分类名已存在
+ * @apiErrorExample {json} 分类名已存在
+ *     {
+ *       "code": 1,
+ *       "msg": "分类名已存在",
+ *       "data": {}
+ *     }
+ */
+
 type Category struct {
 	categoryService ICategoryService
 	transform   transform.Category
