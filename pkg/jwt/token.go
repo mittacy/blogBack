@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-const secret = "NGfb9Bk34XwZ6CBSt8" // 服务开始后请勿更改密钥，否则会导致已经注册的token无法解压
+var secret string // 服务开始后请勿更改密钥，否则会导致已经注册的token无法解压
 
 var Token *token
 
@@ -23,7 +23,7 @@ type token struct {
 
 type TokenData struct {
 	UserId int64 `json:"userId"`
-	Role   int `json:"role"`
+	Role   int   `json:"role"`
 	jwt.StandardClaims
 }
 
@@ -33,6 +33,13 @@ func InitToken(customRedis cache.CustomRedis) {
 	var expire time.Duration
 	if err := viper.UnmarshalKey("jwt.expire", &expire); err != nil {
 		panic(fmt.Sprintf("jwt init err: %s", err))
+	}
+
+	if err := viper.UnmarshalKey("jwt.secret", &secret); err != nil {
+		panic(fmt.Sprintf("jwt init err: %s", err))
+	}
+	if secret == "" {
+		panic("jwt.secret config cannot be empty")
 	}
 
 	Token = NewToken(expire, customRedis)
@@ -51,8 +58,8 @@ func NewToken(expire time.Duration, customRedis cache.CustomRedis) *token {
 	}
 
 	return &token{
-		Expire: expire,
-		Cache: customRedis,
+		Expire:    expire,
+		Cache:     customRedis,
 		BlackName: fmt.Sprintf("%s:token:blacklist", serverName),
 	}
 }

@@ -4,15 +4,25 @@ import (
 	"github.com/gomodule/redigo/redis"
 	"github.com/mittacy/blogBack/app/api"
 	"github.com/mittacy/blogBack/app/data"
+	"github.com/mittacy/blogBack/app/model"
 	"github.com/mittacy/blogBack/app/service"
 	"github.com/mittacy/blogBack/pkg/logger"
 	"gorm.io/gorm"
 )
 
-func InitUserApi(db *gorm.DB, cache *redis.Pool) api.User {
+func InitUserApi(db *gorm.DB, cache *redis.Pool, conf model.EmailConfig) api.User {
 	customLogger := logger.NewCustomLogger("user")
-	iUserService := data.NewUser(db, cache, customLogger)
-	apiIUserService := service.NewUser(iUserService, customLogger)
-	user := api.NewUser(apiIUserService, customLogger)
-	return user
+	userData := data.NewUser(db, cache, customLogger)
+	emailData := data.NewEmail(db, cache, conf, customLogger)
+	userService := service.NewUser(userData, emailData, customLogger)
+	userApi := api.NewUser(userService, customLogger)
+	return userApi
+}
+
+func InitEmailApi(db *gorm.DB, cache *redis.Pool, conf model.EmailConfig) api.Email {
+	customLogger := logger.NewCustomLogger("email")
+	emailData := data.NewEmail(db, cache, conf, customLogger)
+	emailService := service.NewEmail(emailData, customLogger)
+	emailApi := api.NewEmail(emailService, customLogger)
+	return emailApi
 }
