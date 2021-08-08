@@ -49,6 +49,13 @@ func NewCategory(db *gorm.DB, logger *logger.CustomLogger) service.ICategoryData
 	}
 }
 
+func NewArticleCategory(db *gorm.DB, logger *logger.CustomLogger) service.IArticleCategoryData {
+	return &Category{
+		db:     db,
+		logger: logger,
+	}
+}
+
 func (ctl *Category) Create(category *model.Category) error {
 	// 查询name是否存在
 	count := 0

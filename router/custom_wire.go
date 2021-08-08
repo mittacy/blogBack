@@ -42,3 +42,12 @@ func InitCategoryApi(db *gorm.DB) api.Category {
 	categoryApi := api.NewCategory(categoryService, customLogger)
 	return categoryApi
 }
+
+func InitArticleApi(db *gorm.DB, cache *redis.Pool) api.Article {
+	customLogger := logger.NewCustomLogger("article")
+	categoryData := data.NewArticleCategory(db, customLogger)
+	articleData := data.NewArticle(db, cache, customLogger)
+	articleService := service.NewArticle(articleData, categoryData, customLogger)
+	articleApi := api.NewArticle(articleService, customLogger)
+	return articleApi
+}

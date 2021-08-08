@@ -25,6 +25,7 @@ func InitRouter(r *gin.Engine) {
 	userApi := InitUserApi(db.ConnectGorm("blog"), cache.ConnRedis("blog"), emailConf)
 	adminApi := InitAdminApi(db.ConnectGorm("blog"))
 	categoryApi := InitCategoryApi(db.ConnectGorm("blog"))
+	articleApi := InitArticleApi(db.ConnectGorm("blog"), cache.ConnRedis("blog"))
 
 	// 2. 全局中间件
 	r.Use(ginzap.Ginzap(logger.GetRequestLogger(), time.RFC3339, true))
@@ -58,6 +59,10 @@ func InitRouter(r *gin.Engine) {
 		// 分类
 		g.GET("/categories", categoryApi.List)
 
+		// 文章
+		g.GET("/article/:id", articleApi.Get)
+		g.GET("/articles", articleApi.List)
+		g.GET("/articles_home", articleApi.HomeList)
 
 		/**
 		 * 需要登录的Api
@@ -70,6 +75,13 @@ func InitRouter(r *gin.Engine) {
 				authCategory.POST("", categoryApi.Create)
 				authCategory.DELETE("/:id", categoryApi.Delete)
 				authCategory.PUT("", categoryApi.Update)
+			}
+
+			authArticle := needAuth.Group("/article")
+			{
+				authArticle.POST("", articleApi.Create)
+				authArticle.DELETE("/:id", articleApi.Delete)
+				authArticle.PUT("", articleApi.Update)
 			}
 		}
 	}
