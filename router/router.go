@@ -22,6 +22,7 @@ func InitRouter(r *gin.Engine) {
 	// 1. 初始化控制器
 	emailApi := InitEmailApi(db.ConnectGorm("blog"), cache.ConnRedis("blog"), emailConf)
 	userApi := InitUserApi(db.ConnectGorm("blog"), cache.ConnRedis("blog"), emailConf)
+	adminApi := InitAdminApi(db.ConnectGorm("blog"))
 
 	// 2. 全局中间件
 	r.Use(ginzap.Ginzap(logger.GetRequestLogger(), time.RFC3339, true))
@@ -36,6 +37,7 @@ func InitRouter(r *gin.Engine) {
 		 * 不需要登录的Api
 		 */
 		// 登录
+		g.POST("/session/admin/login", adminApi.Login)
 		g.POST("/session/user/login", userApi.Login)
 
 		// 邮件

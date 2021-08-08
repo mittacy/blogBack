@@ -26,3 +26,11 @@ func InitEmailApi(db *gorm.DB, cache *redis.Pool, conf model.EmailConfig) api.Em
 	emailApi := api.NewEmail(emailService, customLogger)
 	return emailApi
 }
+
+func InitAdminApi(db *gorm.DB) api.Admin {
+	customLogger := logger.NewCustomLogger("admin")
+	adminData := data.NewAdmin(db, customLogger)
+	adminService := service.NewAdmin(adminData, customLogger)
+	adminApi := api.NewAdmin(adminService, customLogger)
+	return adminApi
+}
