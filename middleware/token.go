@@ -1,10 +1,10 @@
 package middleware
 
 import (
+	"github.com/gin-gonic/gin"
 	"github.com/mittacy/blogBack/apierr"
 	"github.com/mittacy/blogBack/pkg/jwt"
 	"github.com/mittacy/blogBack/pkg/response"
-	"github.com/gin-gonic/gin"
 )
 
 // ParseToken 解析token到gin.Context
