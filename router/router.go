@@ -5,6 +5,7 @@ import (
 	ginzap "github.com/gin-contrib/zap"
 	"github.com/gin-gonic/gin"
 	"github.com/mittacy/blogBack/app/model"
+	"github.com/mittacy/blogBack/middleware"
 	"github.com/mittacy/blogBack/pkg/config"
 	"github.com/mittacy/blogBack/pkg/logger"
 	"github.com/mittacy/blogBack/pkg/store/cache"
@@ -23,6 +24,7 @@ func InitRouter(r *gin.Engine) {
 	emailApi := InitEmailApi(db.ConnectGorm("blog"), cache.ConnRedis("blog"), emailConf)
 	userApi := InitUserApi(db.ConnectGorm("blog"), cache.ConnRedis("blog"), emailConf)
 	adminApi := InitAdminApi(db.ConnectGorm("blog"))
+	categoryApi := InitCategoryApi(db.ConnectGorm("blog"))
 
 	// 2. 全局中间件
 	r.Use(ginzap.Ginzap(logger.GetRequestLogger(), time.RFC3339, true))
@@ -51,6 +53,24 @@ func InitRouter(r *gin.Engine) {
 		{
 			user.POST("", userApi.Register)
 			user.GET("/:id", userApi.GetInfo)
+		}
+
+		// 分类
+		g.GET("/categories", categoryApi.List)
+
+
+		/**
+		 * 需要登录的Api
+		 */
+		needAuth := g.Group("")
+		needAuth.Use(middleware.ParseToken())
+		{
+			authCategory := needAuth.Group("/category")
+			{
+				authCategory.POST("", categoryApi.Create)
+				authCategory.DELETE("/:id", categoryApi.Delete)
+				authCategory.PUT("", categoryApi.Update)
+			}
 		}
 	}
 }

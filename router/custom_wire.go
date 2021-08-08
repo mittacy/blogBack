@@ -34,3 +34,11 @@ func InitAdminApi(db *gorm.DB) api.Admin {
 	adminApi := api.NewAdmin(adminService, customLogger)
 	return adminApi
 }
+
+func InitCategoryApi(db *gorm.DB) api.Category {
+	customLogger := logger.NewCustomLogger("category")
+	categoryData := data.NewCategory(db, customLogger)
+	categoryService := service.NewCategory(categoryData, customLogger)
+	categoryApi := api.NewCategory(categoryService, customLogger)
+	return categoryApi
+}

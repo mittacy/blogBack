@@ -36,8 +36,7 @@ func (ctl *User) UserPack(data *model.User) (*userValidator.GetReply, error) {
 func (ctl *User) GetReply(c *gin.Context, data *model.User) {
 	reply, err := ctl.UserPack(data)
 	if err != nil {
-		ctl.logger.CopierErrLog(err)
-		response.Unknown(c)
+		response.CopierErrAndLog(c, ctl.logger, err)
 		return
 	}
 
