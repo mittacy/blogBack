@@ -34,6 +34,7 @@ type IArticleService interface {
 	UpdateWeight(id int64, weight int64) error
 	Get(id int64) (*model.Article, error)
 	List(page, pageSize int) ([]model.Article, int64, error)
+	ListByCategory(categoryId int64, page, pageSize int) ([]model.Article, int64, error)
 	ListHome() ([]model.Article, error)
 }
 
@@ -217,6 +218,7 @@ func (ctl *Article) Get(c *gin.Context) {
  *
  * @apiParam {number{1..}} page 页码
  * @apiParam {number{1..50}} page_size 数据分页大小
+ * @apiParam {number{1..}} category_id 分类id,传空则为全部
  *
  * @apiSuccess {number} id 文章id
  * @apiSuccess {number} category_id 分类id
@@ -266,7 +268,18 @@ func (ctl *Article) List(c *gin.Context) {
 		return
 	}
 
-	articles, totalSize, err := ctl.articleService.List(req.Page, req.PageSize)
+	var (
+		articles []model.Article
+		totalSize int64
+		err error
+	)
+
+	if req.CategoryId > 0 {
+		articles, totalSize, err = ctl.articleService.ListByCategory(req.CategoryId, req.Page, req.PageSize)
+	} else {
+		articles, totalSize, err = ctl.articleService.List(req.Page, req.PageSize)
+	}
+
 	if err != nil {
 		response.CheckErrAndLog(c, ctl.logger, "article list", err)
 		return

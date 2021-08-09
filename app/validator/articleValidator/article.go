@@ -38,8 +38,9 @@ type GetReply struct {
 }
 
 type ListReq struct {
-	Page     int `form:"page" json:"page" binding:"omitempty,min=1"`
-	PageSize int `form:"page_size" json:"page_size" binding:"omitempty,min=1,max=50"`
+	Page       int   `form:"page" json:"page" binding:"omitempty,min=1"`
+	PageSize   int   `form:"page_size" json:"page_size" binding:"omitempty,min=1,max=50"`
+	CategoryId int64 `form:"category_id" json:"category_id" binding:"omitempty,min=1"`
 }
 
 type ListReply struct {

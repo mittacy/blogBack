@@ -29,7 +29,9 @@ type IArticleData interface {
 	UpdateById(article *model.Article, updateFields []string) error
 	Get(id int64) (*model.Article, error)
 	GetSum() (int64, error)
+	GetSumByCategory(categoryId int64) (int64, error)
 	List(selectFields []string, page, pageSize int) ([]model.Article, error)
+	ListByCategory(selectFields []string, categoryId int64, page, pageSize int) ([]model.Article, error)
 	ListByWeight(selectFields []string, count int) ([]model.Article, error)
 	IncrView(id int64) error
 }
@@ -124,6 +126,31 @@ func (ctl *Article) List(page, pageSize int) ([]model.Article, int64, error) {
 	}
 
 	totalSize, err := ctl.articleData.GetSum()
+	if err != nil {
+		return nil, 0, err
+	}
+
+	return articles, totalSize, nil
+}
+
+func (ctl *Article) ListByCategory(categoryId int64, page, pageSize int) ([]model.Article, int64, error) {
+	/*
+	 * 1. 获取文章列表
+	 * 2. 填充文章的分类信息
+	 * 3. 查询文章总记录量
+	 */
+	fields := []string{"id", "category_id", "title", "views", "created_at", "updated_at"}
+
+	articles, err := ctl.articleData.ListByCategory(fields, categoryId, page, pageSize)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	if err := ctl.FillArticlesCategoryName(articles); err != nil {
+		return nil, 0, err
+	}
+
+	totalSize, err := ctl.articleData.GetSumByCategory(categoryId)
 	if err != nil {
 		return nil, 0, err
 	}

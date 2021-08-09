@@ -40,6 +40,11 @@ func (ctl *Article) ArticlesPack(data []model.Article) (reply []articleValidator
 	return
 }
 
+func (ctl *Article) HomeArticlesPack(data []model.Article) (reply []articleValidator.ListHomeReply, err error) {
+	err = copier.Copy(&reply, &data)
+	return
+}
+
 // GetReply 详情响应包装
 // @param data 数据库数据
 func (ctl *Article) GetReply(c *gin.Context, data *model.Article) {
@@ -76,7 +81,7 @@ func (ctl *Article) ListReply(c *gin.Context, data []model.Article, totalSize in
 }
 
 func (ctl *Article) HomeListReply(c *gin.Context, articles []model.Article) {
-	list, err := ctl.ArticlesPack(articles)
+	list, err := ctl.HomeArticlesPack(articles)
 	if err != nil {
 		response.CopierErrAndLog(c, ctl.logger, err)
 		return
