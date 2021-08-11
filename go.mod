@@ -4,13 +4,13 @@ go 1.16
 
 require (
 	github.com/AlecAivazis/survey/v2 v2.2.16 // indirect
-	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
 	github.com/gin-contrib/zap v0.0.1 // indirect
 	github.com/gin-gonic/gin v1.7.2 // indirect
 	github.com/go-playground/locales v0.13.0 // indirect
 	github.com/go-playground/universal-translator v0.17.0 // indirect
 	github.com/go-playground/validator v9.31.0+incompatible // indirect
 	github.com/go-playground/validator/v10 v10.8.0 // indirect
+	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
 	github.com/gomodule/redigo v1.8.5 // indirect
 	github.com/google/wire v0.5.0 // indirect
 	github.com/jinzhu/copier v0.3.2 // indirect

@@ -2,7 +2,7 @@ package jwt
 
 import (
 	"fmt"
-	"github.com/dgrijalva/jwt-go"
+	"github.com/golang-jwt/jwt"
 	"github.com/mittacy/blogBack/pkg/store/cache"
 	"github.com/pkg/errors"
 	"github.com/spf13/viper"
